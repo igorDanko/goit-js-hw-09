@@ -7,7 +7,7 @@ let formData = {
   message: '',
 };
 
-const fillFormFields = form => {
+const fillFormFields = event => {
   const formDataFormLS = JSON.parse(
     localStorage.getItem('feedback-form-state')
   );
@@ -18,16 +18,15 @@ const fillFormFields = form => {
 
   formData = formDataFormLS;
 
-  const formDataFormLSKeys = Object.keys(formDataFormLS);
-
-  formDataFormLSKeys.forEach(key => {
-    form.elements[key].value = formDataFormLS[key];
+  Object.keys(formDataFormLS).forEach(key => {
+    event.elements[key].value = formDataFormLS[key];
   });
 };
 
 fillFormFields(refs.formEl);
 
-const onFormInput = ({ target: formField }) => {
+const onFormInput = event => {
+  const formField = event.target;
   const formFieldValue = formField.value.trim();
   const formFieldName = formField.name;
 
@@ -38,15 +37,19 @@ const onFormInput = ({ target: formField }) => {
 
 const onFormSubmit = event => {
   event.preventDefault();
+
   if (!formData.email || !formData.message) {
-    alert('Fill please all fields');
+    alert('Please fill in all fields');
     return;
   }
 
+  console.log(formData);
+
   event.target.reset();
   localStorage.removeItem('feedback-form-state');
+
+  formData = { email: '', message: '' };
 };
 
 refs.formEl.addEventListener('input', onFormInput);
-
 refs.formEl.addEventListener('submit', onFormSubmit);
